@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ReactBookmarksManager.Data
 {
-    public class BookmarkCount
+    public class TopBookmark
     {
-        public string URL { get; set; }
-        public int Count { get; set; }
+            public string Url { get; set; }
+            public int Count { get; set; }
+
     }
 }

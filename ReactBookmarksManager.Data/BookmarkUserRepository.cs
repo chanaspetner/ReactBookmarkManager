@@ -74,35 +74,30 @@ namespace ReactBookmarksManager.Data
             ctx.SaveChanges();
         }
 
-        public List<BookmarkCount> MostPopularBookmarks()
+        public List<TopBookmark> MostPopularBookmarks()
         {
             using var ctx = new BookmarksDataContext(_connectionString);
-            var users = ctx.Users.Include(u => u.Bookmarks).ToList();
-            var bookmarkCounts = new List<BookmarkCount>();
-                foreach(User u in users)
+            var bookmarks = ctx.Bookmarks.ToList();
+            var dictionary = new Dictionary<string, int>();
+            foreach (var bookmark in bookmarks)
+            {
+                if (dictionary.ContainsKey(bookmark.URL))
                 {
-                    foreach(Bookmark b in u.Bookmarks)
-                    {
-                        if (bookmarkCounts.Any(bo => bo.URL == b.URL))
-                        {
-                            bookmarkCounts.FirstOrDefault(bc => bc.URL == b.URL).Count++;
-                        }
-                        else
-                        {
-                            bookmarkCounts.Add(new BookmarkCount
-                            {
-                                URL = b.URL,
-                                Count = 1
-                            });
-
-                        }
-                        
-                    }
+                    dictionary[bookmark.URL]++;
                 }
-                  
-            
+                else
+                {
+                    dictionary[bookmark.URL] = 1;
+                }
+            }
 
-            return bookmarkCounts.OrderByDescending(bc => bc.Count).Take(5).ToList();
+
+            return dictionary.OrderByDescending(k => k.Value).Take(5).Select(kvp => new TopBookmark
+            {
+                Url = kvp.Key,
+                Count = kvp.Value
+            }).ToList();
+
 
         }
 
