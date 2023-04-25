@@ -42,9 +42,7 @@ const MyBookmarks = () => {
 
     const onDeleteClick = async id => {
         await axios.post(`/api/bookmark/delete?id=${id}`);
-        if(beingEdited.includes(id)){
-            setBeingEdited(beingEdited.filter(b => b.id !== id));
-        }
+        setBeingEdited(beingEdited.filter(b => b.id !== id));
     }
 
     return(
